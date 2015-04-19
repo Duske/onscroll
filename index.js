@@ -12,31 +12,34 @@ var doc = window.document;
 
 
 function Onscroll(options) {
-    options = options || {};
-
-    this.elements = [].slice.call(options.elements);
-
-    this._checkCollection = {};
-    console.log(doc, window);
-    doc.title = "onscroll";
-
     var that = this;
-    function handleScroll(event) {
-        console.log('scrolled');
+    this._checkCollection = {};
 
-        // The function receive the scroll event as parameter.
-        console.log(event);
 
-        // The function context is the given node.
-        console.log(this.scrollTop);
+    options = options || {};
+    this.elements = [].slice.call(options.elements);
+    this.onScrollFunction = options.onScrollFunction || function(element) {
+        console.log(element);
+    };
+    this.checkPositionBuffer = options.checkPositionBuffer || (window.innerHeight / 3 );
 
-        var elements = that._checkPositionWithElements(window.pageYOffset);
+    //initialize
+    this.calculateElementPositions();
+    function handleScroll() {
+
+        var elements = that._checkPositionWithElements(window.scrollY);
         for(var i = 0; i < elements.length; i++) {
+            that.onScrollFunction.call(null,elements[i]);
             elements[i].style.background = '#000';
         }
 
     }
     decouple(window, 'scroll', handleScroll);
+
+    //Fire it initially to handle elements which are already in view
+    window.addEventListener('load', function() {
+       handleScroll();
+    });
 }
 
 Onscroll.prototype.getElements = function () {
@@ -47,7 +50,7 @@ Onscroll.prototype.calculateElementPositions = function () {
     var top;
     for(var i = 0; i < this.elements.length; i++) {
         top = this.elements[i].getBoundingClientRect().top;
-        this._addToCheckCollection(top, this.elements[i]);
+        this._addToCheckCollection(top - this.checkPositionBuffer, this.elements[i]);
     }
 };
 
@@ -63,12 +66,13 @@ Onscroll.prototype._checkPositionWithElements = function(windowPosition) {
     var elementsToHandle = [];
     for (var pos in this._checkCollection) {
         if (pos <= windowPosition && this._checkCollection[pos]) {
-            elementsToHandle.concat(this._checkCollection[pos]);
+            elementsToHandle = elementsToHandle.concat(this._checkCollection[pos]);
             this._checkCollection[pos] = null;
         }
     }
     return elementsToHandle;
 };
+
 
 /**
  * Expose Onscroll

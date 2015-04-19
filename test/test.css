@@ -1,0 +1,17 @@
+.visuallyhidden {
+    visibility: hidden;
+}
+.scrolledTo {
+    background: black;
+    color: white;
+}
+.scrolledTo .visuallyhidden {
+    visibility: visible;
+}
+.headline.headline-lead {
+    font-size: 46px;
+    border-bottom: 1px solid black;
+}
+body {
+    margin-top: 50px;
+}
