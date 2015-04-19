@@ -24,7 +24,7 @@ function Onscroll(options) {
     this.checkPositionBuffer = options.checkPositionBuffer || (window.innerHeight / 3 );
 
     //initialize
-    this.calculateElementPositions();
+
     function handleScroll() {
 
         var elements = that._checkPositionWithElements(window.scrollY);
@@ -37,7 +37,8 @@ function Onscroll(options) {
 
     //Fire it initially to handle elements which are already in view
     window.addEventListener('load', function() {
-       handleScroll();
+        that.calculateElementPositions();
+        handleScroll();
     });
 }
 
@@ -48,7 +49,7 @@ Onscroll.prototype.getElements = function () {
 Onscroll.prototype.calculateElementPositions = function () {
     var top;
     for(var i = 0; i < this.elements.length; i++) {
-        top = this.elements[i].getBoundingClientRect().top;
+        top = this.elements[i].getBoundingClientRect().top + window.scrollY;
         this._addToCheckCollection(top - this.checkPositionBuffer, this.elements[i]);
     }
 };
