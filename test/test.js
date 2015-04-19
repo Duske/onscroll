@@ -14,7 +14,8 @@ var onscroll = new Onscroll({
     elements: doc.getElementsByClassName('scrollElement'),
     onScrollFunction: function(element) {
         element.classList.add('scrolledTo');
-    }
+    },
+    checkPositionBuffer: window.innerHeight / 2
 });
 
 describe('onscroll', function () {

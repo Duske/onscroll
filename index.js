@@ -30,7 +30,6 @@ function Onscroll(options) {
         var elements = that._checkPositionWithElements(window.scrollY);
         for(var i = 0; i < elements.length; i++) {
             that.onScrollFunction.call(null,elements[i]);
-            elements[i].style.background = '#000';
         }
 
     }
