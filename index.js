@@ -9,35 +9,35 @@ var decouple = require('decouple');
  * Privates
  */
 var doc = window.document;
-
+var scrollTimeout;
 
 function Onscroll(options) {
     var that = this;
     this._checkCollection = {};
-
-
     options = options || {};
     this.elements = [].slice.call(options.elements);
     this.onScrollFunction = options.onScrollFunction || function(element) {
         console.log(element);
     };
+    options.scrollTimeoutTick = options.scrollTimeoutTick || 250;
     this.checkPositionBuffer = options.checkPositionBuffer || (window.innerHeight / 3 );
-
-    //initialize
+    this.hasScrolled = false;
 
     function handleScroll() {
-
-        var elements = that._checkPositionWithElements(window.scrollY);
-        for(var i = 0; i < elements.length; i++) {
-            that.onScrollFunction.call(null,elements[i]);
+        if (!that.hasScrolled) {
+            clearTimeout(scrollTimeout);
+            that.hasScrolled = true;
+            scrollTimeout = setTimeout(function() {
+                that.doScrollActions();
+                that.hasScrolled = false;
+            }, options.scrollTimeoutTick);
         }
-
     }
-    decouple(window, 'scroll', handleScroll);
 
     //Fire it initially to handle elements which are already in view
     window.addEventListener('load', function() {
         that.calculateElementPositions();
+        decouple(window, 'scroll', handleScroll);
         handleScroll();
     });
 }
@@ -49,7 +49,7 @@ Onscroll.prototype.getElements = function () {
 Onscroll.prototype.calculateElementPositions = function () {
     var top;
     for(var i = 0; i < this.elements.length; i++) {
-        top = this.elements[i].getBoundingClientRect().top + window.scrollY;
+        top = this.elements[i].getBoundingClientRect().top + window.pageYOffset;
         this._addToCheckCollection(top - this.checkPositionBuffer, this.elements[i]);
     }
 };
@@ -73,6 +73,12 @@ Onscroll.prototype._checkPositionWithElements = function(windowPosition) {
     return elementsToHandle;
 };
 
+Onscroll.prototype.doScrollActions = function() {
+    var elements = this._checkPositionWithElements(window.pageYOffset);
+    for(var i = 0; i < elements.length; i++) {
+        this.onScrollFunction.call(null,elements[i]);
+    }
+};
 
 /**
  * Expose Onscroll

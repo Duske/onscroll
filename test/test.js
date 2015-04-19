@@ -1,6 +1,4 @@
-/**
- * Created by dchabrowski on 17.04.15.
- */
+//if executed with node
 if (exports) {
     var fs = require('fs');
     var jsdom = require('jsdom');
