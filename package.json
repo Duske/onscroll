@@ -1,0 +1,34 @@
+{
+  "name": "onscroll",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "node browserify.js",
+    "test": "npm run build && node_modules/.bin/_mocha"
+  },
+  "devDependencies": {
+    "better-assert": "1.0.1",
+    "browserify": "^9.0.8",
+    "jsdom": "3.1.1",
+    "jshint": "2.6.3",
+    "mocha": "2.1.0",
+    "uglify-js": "2.4.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Duske/onscroll.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Duske/onscroll/issues"
+  },
+  "homepage": "https://github.com/Duske/onscroll",
+  "dependencies": {
+    "decouple": "0.0.1"
+  }
+}
