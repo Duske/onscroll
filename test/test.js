@@ -13,7 +13,7 @@ var onscroll = new Onscroll({
     onScrollFunction: function(element) {
         element.classList.add('scrolledTo');
     },
-    checkPositionBuffer: window.innerHeight / 2
+    threshold: window.innerHeight / 2
 });
 
 describe('onscroll', function () {
