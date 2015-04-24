@@ -20,7 +20,7 @@ function Onscroll(options) {
         console.log(element);
     };
     options.scrollTimeoutTick = options.scrollTimeoutTick || 250;
-    this.checkPositionBuffer = options.checkPositionBuffer || (window.innerHeight / 3 );
+    this.threshold = options.threshold || (window.innerHeight / 3 );
     this.hasScrolled = false;
 
     function handleScroll() {
@@ -50,7 +50,7 @@ Onscroll.prototype.calculateElementPositions = function () {
     var top;
     for(var i = 0; i < this.elements.length; i++) {
         top = this.elements[i].getBoundingClientRect().top + window.pageYOffset;
-        this._addToCheckCollection(top - this.checkPositionBuffer, this.elements[i]);
+        this._addToCheckCollection(top - this.threshold, this.elements[i]);
     }
 };
 
@@ -74,7 +74,7 @@ Onscroll.prototype._checkPositionWithElements = function(windowPosition) {
 };
 
 Onscroll.prototype.doScrollActions = function() {
-    var elements = this._checkPositionWithElements(window.pageYOffset);
+    var elements = this ._checkPositionWithElements(window.pageYOffset);
     for(var i = 0; i < elements.length; i++) {
         this.onScrollFunction.call(null,elements[i]);
     }
