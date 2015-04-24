@@ -5,7 +5,7 @@
 
 - Dependency-free.
 - Simple setup.
-- small
+- Small (3KB)
 - Optimized scroll handling
 
 OnScroll decouples the scroll event from the browser to minimize the weight it causes. The callback function runs within a requestAnimationFrame()-Call to optimize rendering. The weight can be reduced even more by providing a timeout when the callback function should be executed.
