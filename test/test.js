@@ -11,9 +11,12 @@ var doc = window.document;
 var onscroll = new Onscroll({
     elements: doc.getElementsByClassName('scrollElement'),
     onScrollFunction: function(element) {
-        element.classList.add('scrolledTo');
+        if(element.classList) {
+            element.classList.add('scrolledTo');
+        }
     },
-    threshold: window.innerHeight / 2
+    threshold: window.innerHeight / 2,
+    scrollTimeoutTick: 300
 });
 
 describe('onscroll', function () {
@@ -94,14 +97,16 @@ describe('onscroll', function () {
         });
     });
 
-    describe('fire function when scrolled to element', function () {
-        before(function(){
-            onscroll.calculateElementPositions();
+    describe('add new elements to element set', function () {
+        before(function() {
+            onscroll.setElements(Array.prototype.slice.call(doc.getElementsByClassName('scrollElement')));
+            onscroll._calculateElementPositions(onscroll.getElements());
         });
-        it('should fire the given method when scrolling to an element', function () {
-            //TODO:
-        });
-
+        var newElements = [doc.getElementById('elementToAdd')];
+         it('add should add new elements to the elements set', function () {
+             onscroll.addNewElements(newElements);
+             assert(onscroll.getElements().length == 4);
+         });
     });
 
 });
