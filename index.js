@@ -68,7 +68,10 @@ Onscroll.prototype.updateAllElementPositions = function () {
     this.doScrollActions();
 };
 
-Onscroll.prototype.addNewElements = function (elements) {
+Onscroll.prototype.add = function (elements) {
+    if(!Array.isArray(elements)) {
+        elements = [elements];
+    }
     this.addElements(elements);
     this._calculateElementPositions(elements);
     this.doScrollActions();

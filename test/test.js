@@ -16,7 +16,7 @@ var onscroll = new Onscroll({
         }
     },
     threshold: window.innerHeight / 2,
-    scrollTimeoutTick: 300
+    scrollTimeoutTick: 100
 });
 
 describe('onscroll', function () {
@@ -102,11 +102,28 @@ describe('onscroll', function () {
             onscroll.setElements(Array.prototype.slice.call(doc.getElementsByClassName('scrollElement')));
             onscroll._calculateElementPositions(onscroll.getElements());
         });
-        var newElements = [doc.getElementById('elementToAdd')];
+        var newElements = [doc.getElementById('elementToAdd'), doc.getElementById('elementToAdd')];
          it('add should add new elements to the elements set', function () {
-             onscroll.addNewElements(newElements);
-             assert(onscroll.getElements().length == 4);
+             onscroll.add(newElements);
+             assert(onscroll.getElements().length == 5);
          });
+        it('add should add a single element to the elements set as well', function () {
+            onscroll.add(doc.getElementById('elementToAdd'));
+            assert(onscroll.getElements().length == 6);
+        });
+    });
+
+    describe('update all element positions', function () {
+        before(function() {
+            //set elements an calculate their positions
+            onscroll._checkCollection = {
+                500: doc.getElementById('elementToAdd')
+            };
+        });
+        it('clear existing collection', function () {
+            onscroll.updateAllElementPositions();
+            assert(onscroll._checkCollection['500'] == undefined);
+        });
     });
 
 });
