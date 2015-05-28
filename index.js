@@ -14,15 +14,18 @@ var scrollTimeout;
 function Onscroll(options) {
     var that = this;
     this._checkCollection = {};
+
+    //Options
     options = options || {};
     this.elements = [].slice.call(options.elements);
     this.onScrollFunction = options.onScrollFunction || function(element) {
         console.log(element);
     };
-    options.scrollTimeoutTick = options.scrollTimeoutTick || 250;
+    this.scrollTimeoutTick = options.scrollTimeoutTick || 250;
     this.threshold = options.threshold || (window.innerHeight / 3 );
-    this.hasScrolled = false;
 
+    //Scroll Handler
+    this.hasScrolled = false;
     function handleScroll() {
         if (!that.hasScrolled) {
             clearTimeout(scrollTimeout);
@@ -30,13 +33,13 @@ function Onscroll(options) {
             scrollTimeout = setTimeout(function() {
                 that.doScrollActions();
                 that.hasScrolled = false;
-            }, options.scrollTimeoutTick);
+            }, that.scrollTimeoutTick);
         }
     }
 
     //Fire it initially to handle elements which are already in view
     window.addEventListener('load', function() {
-        that.calculateElementPositions();
+        that._calculateElementPositions(that.elements);
         decouple(window, 'scroll', handleScroll);
         handleScroll();
     });
@@ -46,11 +49,39 @@ Onscroll.prototype.getElements = function () {
     return this.elements;
 };
 
-Onscroll.prototype.calculateElementPositions = function () {
+Onscroll.prototype.setElements = function (newElements) {
+    this.elements = newElements;
+};
+
+Onscroll.prototype.addElements = function (elementsToAdd) {
+    this.setElements(this.getElements().concat(elementsToAdd));
+};
+
+Onscroll.prototype.changeElements = function (newElements) {
+    this.setElements(newElements);
+    this._calculateElementPositions();
+};
+
+Onscroll.prototype.updateAllElementPositions = function () {
+    this._checkCollection = {};
+    this._calculateElementPositions(this.elements);
+    this.doScrollActions();
+};
+
+Onscroll.prototype.add = function (elements) {
+    if(!Array.isArray(elements)) {
+        elements = [elements];
+    }
+    this.addElements(elements);
+    this._calculateElementPositions(elements);
+    this.doScrollActions();
+};
+
+Onscroll.prototype._calculateElementPositions = function (elements) {
     var top;
-    for(var i = 0; i < this.elements.length; i++) {
-        top = this.elements[i].getBoundingClientRect().top + window.pageYOffset;
-        this._addToCheckCollection(top - this.threshold, this.elements[i]);
+    for(var i = 0; i < elements.length; i++) {
+        top = elements[i].getBoundingClientRect().top + window.pageYOffset;
+        this._addToCheckCollection(top - this.threshold, elements[i]);
     }
 };
 
@@ -74,7 +105,7 @@ Onscroll.prototype._checkPositionWithElements = function(windowPosition) {
 };
 
 Onscroll.prototype.doScrollActions = function() {
-    var elements = this ._checkPositionWithElements(window.pageYOffset);
+    var elements = this._checkPositionWithElements(window.pageYOffset);
     for(var i = 0; i < elements.length; i++) {
         this.onScrollFunction.call(null,elements[i]);
     }

@@ -14,10 +14,12 @@
   "devDependencies": {
     "better-assert": "1.0.1",
     "browserify": "^9.0.8",
+    "chai": "^2.3.0",
     "jsdom": "3.1.1",
     "jshint": "2.6.3",
     "mocha": "2.1.0",
-    "uglify-js": "2.4.15"
+    "uglify-js": "2.4.15",
+    "sinon": "^1.14.1"
   },
   "repository": {
     "type": "git",
