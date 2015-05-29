@@ -1,10 +1,11 @@
+/*global describe, it, before, after, expect, window:false, browser:true, expr:true */
 //if executed with node
 if (exports) {
     var fs = require('fs');
     var jsdom = require('jsdom');
     var html = fs.readFileSync('./test/index.html', 'utf-8');
     window = jsdom.jsdom(html).parentWindow;
-    var assert = require('better-assert');
+    var expect = require('chai').expect;
     var Onscroll = require('../');
 }
 var doc = window.document;
@@ -20,13 +21,13 @@ var onscroll = new Onscroll({
 });
 
 describe('onscroll', function () {
-
+    'use strict';
     it('should be defined.', function () {
-        assert(Onscroll !== undefined);
+        expect(Onscroll).to.not.be.undefined;
     });
 
     it('should be a function.', function () {
-        assert(typeof Onscroll === 'function');
+        expect(Onscroll).to.be.a('function');
     });
 
     describe('_addToCheckCollection', function () {
@@ -34,25 +35,26 @@ describe('onscroll', function () {
            onscroll._checkCollection = {};
         });
         it('should be an empty collection initially.', function () {
-            assert(typeof onscroll._checkCollection == 'object');
-            assert(Object.keys(onscroll._checkCollection).length == 0);
+            expect(onscroll._checkCollection).to.be.a('object');
+            expect(Object.keys(onscroll._checkCollection)).to.be.empty;
         });
         it('should add the first item correctly.', function () {
             onscroll._addToCheckCollection('10', 'first');
-            assert(isArray(onscroll._checkCollection['10']));
-            assert(onscroll._checkCollection['10'][0] == 'first');
-            assert(Object.keys(onscroll._checkCollection).length == 1);
+            expect((onscroll._checkCollection['10'])).to.be.an.instanceof(Array);
+            expect(onscroll._checkCollection['10'][0]).to.equal('first');
+            expect(Object.keys(onscroll._checkCollection)).to.have.length(1);
         });
         it('should add the second item correctly.', function () {
             onscroll._addToCheckCollection('10', 'second');
-            assert(onscroll._checkCollection['10'][1] == 'second');
-            assert(onscroll._checkCollection['10'].length == 2);
-            assert(Object.keys(onscroll._checkCollection).length == 1);
+            expect(onscroll._checkCollection['10'][0]).to.equal('first');
+            expect(onscroll._checkCollection['10'][1]).to.equal('second');
+            expect(onscroll._checkCollection['10']).to.have.length(2);
+            expect(Object.keys(onscroll._checkCollection)).to.have.length(1);
         });
         it('should add various items correctly.', function () {
             onscroll._addToCheckCollection('20', 'third');
-            assert(isArray(onscroll._checkCollection['20']));
-            assert(Object.keys(onscroll._checkCollection).length == 2);
+            expect((onscroll._checkCollection['20'])).to.be.an.instanceof(Array);
+            expect(Object.keys(onscroll._checkCollection)).to.have.length(2);
         });
         after(function(){
             onscroll._checkCollection = {};
@@ -69,28 +71,28 @@ describe('onscroll', function () {
         });
         it('should return an empty array when no element matches.', function () {
             var elements = onscroll._checkPositionWithElements(0);
-            assert(isArray(elements));
-            assert(elements.length == 0);
+            expect(elements).to.be.an.instanceof(Array);
+            expect(elements).to.be.empty;
         });
         it('should return an filled array when element matches.', function () {
             var elements = onscroll._checkPositionWithElements(10);
-            assert(isArray(elements));
-            assert(elements.length == 2);
-            assert(elements[0] === 'first');
-            assert(elements[1] === 'second');
+            expect(elements).to.be.an.instanceof(Array);
+            expect(elements).to.have.length(2);
+            expect(elements[0]).to.equal('first');
+            expect(elements[1]).to.equal('second');
         });
         it('should remove elements from collection if they have matched.', function () {
-            assert(onscroll._checkCollection[10] == null);
-            assert(onscroll._checkCollection[20] != null);
-            assert(onscroll._checkCollection[30] != null);
+            expect(onscroll._checkCollection[10]).to.be.null;
+            expect(onscroll._checkCollection[20]).not.to.be.null;
+            expect(onscroll._checkCollection[30]).not.to.be.null;
         });
         it('should match multiple positions entries.', function () {
             var elements = onscroll._checkPositionWithElements(31);
-            assert(elements.length == 2);
-            assert(elements[0] === 'third');
-            assert(elements[1] === 'fourth');
-            assert(onscroll._checkCollection[20] == null);
-            assert(onscroll._checkCollection[30] == null);
+            expect(elements).to.have.length(2);
+            expect(elements[0]).to.equal('third');
+            expect(elements[1]).to.equal('fourth');
+            expect(onscroll._checkCollection[20]).to.be.null;
+            expect(onscroll._checkCollection[30]).to.be.null;
         });
         after(function(){
             onscroll._checkCollection = {};
@@ -105,11 +107,13 @@ describe('onscroll', function () {
         var newElements = [doc.getElementById('elementToAdd'), doc.getElementById('elementToAdd')];
          it('add should add new elements to the elements set', function () {
              onscroll.add(newElements);
-             assert(onscroll.getElements().length == 5);
+             var elements = onscroll.getElements();
+             expect(elements).to.have.length(5);
          });
         it('add should add a single element to the elements set as well', function () {
             onscroll.add(doc.getElementById('elementToAdd'));
-            assert(onscroll.getElements().length == 6);
+            var elements = onscroll.getElements();
+            expect(elements).to.have.length(6);
         });
     });
 
@@ -122,7 +126,7 @@ describe('onscroll', function () {
         });
         it('clear existing collection', function () {
             onscroll.updateAllElementPositions();
-            assert(onscroll._checkCollection['500'] == undefined);
+            expect(onscroll._checkCollection['500']).to.be.undefined;
         });
     });
 
