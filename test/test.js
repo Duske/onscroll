@@ -5,10 +5,11 @@ if (exports) {
     var jsdom = require('jsdom');
     var html = fs.readFileSync('./test/index.html', 'utf-8');
     window = jsdom.jsdom(html).parentWindow;
-    var expect = require('chai').expect;
+    var chai = require('chai');
     var Onscroll = require('../');
 }
 var doc = window.document;
+var expect = chai.expect;
 var onscroll = new Onscroll({
     elements: doc.getElementsByClassName('scrollElement'),
     onScrollFunction: function(element) {
